@@ -16,5 +16,14 @@ func main() {
 			grid.SetText(i, j, 0, 0, 0, 1, pos, 32)
 		}
 	}
+	neighbors, _ := grid.GetNeighbors(3, 2)
+	for _, h := range neighbors {
+		grid.SetFill(h.X, h.Y, 1, 0, 0, 1)
+	}
+
+	neighbors, _ = grid.GetNeighbors(1, 3)
+	for _, h := range neighbors {
+		grid.SetFill(h.X, h.Y, 0, 1, 0, 1)
+	}
 	grid.SavePNG("out.png")
 }

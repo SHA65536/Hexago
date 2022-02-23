@@ -111,6 +111,7 @@ func (grid *HexGrid) SetStroke(x, y int, r, g, b, a, w float64) error {
 	return nil
 }
 
+// SetText sets the colour, size, and content of a cell's text
 func (grid *HexGrid) SetText(x, y int, r, g, b, a float64, txt string, fontSize float64) error {
 	if x >= grid.Rows || y >= grid.Cols {
 		return fmt.Errorf("index error: index [%v][%v] out of bounds (%v,%v)", x, y, grid.Rows, grid.Cols)
@@ -121,13 +122,48 @@ func (grid *HexGrid) SetText(x, y int, r, g, b, a float64, txt string, fontSize 
 	return nil
 }
 
-//func (grid *HexGrid) GetNeighbors(x, y int) ([]*Hexagon, error) {
-//	neighbors := make([]*Hexagon, 0)
-//	if x >= grid.Rows || y >= grid.Cols {
-//		return nil, fmt.Errorf("index error: index [%v][%v] out of bounds (%v,%v)", x, y, grid.Rows, grid.Cols)
-//	}
-//
-//}
+// GetNeighbors returns the direct neighbors of a given cell
+func (grid *HexGrid) GetNeighbors(x, y int) ([]*Hexagon, error) {
+	neighbors := make([]*Hexagon, 0)
+	if x >= grid.Rows || y >= grid.Cols {
+		return nil, fmt.Errorf("index error: index [%v][%v] out of bounds (%v,%v)", x, y, grid.Rows, grid.Cols)
+	}
+
+	if x+1 < grid.Rows {
+		// Checking above
+		neighbors = append(neighbors, grid.Tiles[x+1][y])
+	}
+	if x > 0 {
+		// ... and below
+		neighbors = append(neighbors, grid.Tiles[x-1][y])
+	}
+	if y > 0 {
+		// To the left
+		neighbors = append(neighbors, grid.Tiles[x][y-1])
+	}
+	if y+1 < grid.Cols {
+		// To the right
+		neighbors = append(neighbors, grid.Tiles[x][y+1])
+	}
+
+	// Row specific cases
+	if y%2 == 0 {
+		if x+1 < grid.Rows && y > 0 {
+			neighbors = append(neighbors, grid.Tiles[x+1][y-1])
+		}
+		if x+1 < grid.Rows && y+1 < grid.Rows {
+			neighbors = append(neighbors, grid.Tiles[x+1][y+1])
+		}
+	} else {
+		if x > 0 && y > 0 {
+			neighbors = append(neighbors, grid.Tiles[x-1][y-1])
+		}
+		if x > 0 && y+1 < grid.Rows {
+			neighbors = append(neighbors, grid.Tiles[x-1][y+1])
+		}
+	}
+	return neighbors, nil
+}
 
 // SavePNG saves the grid as a PNG
 func (grid *HexGrid) SavePNG(path string) error {
