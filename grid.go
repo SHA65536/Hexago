@@ -53,21 +53,32 @@ type HexGrid struct {
 	Width, Height int
 	Rows, Cols    int
 	Radius        float64
+	marginX       float64
+	marginY       float64
 }
 
 // MakeHexGrid creates a <w> wide and <h> high grid with <r> rows and <c> columns
-func MakeHexGrid(w, h, r, c int) *HexGrid {
+func MakeHexGrid(w, h, r, c float64) *HexGrid {
+	rWidth := (2 * w) / ((3 * c) + 1)
+	rHeight := (2 * h) / (math.Sqrt(3) * math.Sqrt((4*(r*r))+(4*r)+1))
 	grid := &HexGrid{
-		Context: gg.NewContext(w, h),
-		Tiles:   make([][]*Hexagon, r),
-		Width:   w,
-		Height:  h,
-		Rows:    r,
-		Cols:    c,
-		Radius:  100,
+		Context: gg.NewContext(int(w), int(h)),
+		Tiles:   make([][]*Hexagon, int(r)),
+		Width:   int(w),
+		Height:  int(h),
+		Rows:    int(r),
+		Cols:    int(c),
+		Radius:  math.Min(rWidth, rHeight),
+	}
+	if rHeight > rWidth {
+		grid.marginY = h - ((0.5 + r) * (math.Sqrt(3 * rWidth * rWidth)))
+		grid.marginY = grid.marginY / 2
+	} else {
+		grid.marginX = w - (((c / 2) * 3 * rHeight) + (rHeight / 2))
+		grid.marginX = grid.marginX / 2
 	}
 	for i := range grid.Tiles {
-		grid.Tiles[i] = make([]*Hexagon, c)
+		grid.Tiles[i] = make([]*Hexagon, int(c))
 		for j := range grid.Tiles[i] {
 			grid.Tiles[i][j] = &Hexagon{X: i, Y: j}
 		}
@@ -173,7 +184,7 @@ func (grid *HexGrid) GetNeighbors(x, y int) ([]*Hexagon, error) {
 		if x > 0 && y > 0 {
 			neighbors = append(neighbors, grid.Tiles[x-1][y-1])
 		}
-		if x > 0 && y+1 < grid.Rows {
+		if x > 0 && y+1 < grid.Cols {
 			neighbors = append(neighbors, grid.Tiles[x-1][y+1])
 		}
 	}
@@ -186,14 +197,14 @@ func (grid *HexGrid) SavePNG(path string) error {
 	for i := range grid.Tiles {
 		for j := range grid.Tiles[i] {
 			hex := grid.Tiles[i][j]
-			var x, y float64
+			x, y := grid.marginX, grid.marginY
 			if j%2 == 0 {
-				x = grid.Radius + (float64(j) * 1.5 * grid.Radius)
-				y = height + (height * float64(i))
+				x += grid.Radius + (float64(j) * 1.5 * grid.Radius)
+				y += height + (height * float64(i))
 				grid.Context.DrawRegularPolygon(6, x, y, grid.Radius, 0)
 			} else {
-				x = grid.Radius + (float64(j) * 1.5 * grid.Radius)
-				y = (height / 2) + (height * float64(i))
+				x += grid.Radius + (float64(j) * 1.5 * grid.Radius)
+				y += (height / 2) + (height * float64(i))
 			}
 			if hex.FA != 0 {
 				grid.Context.DrawRegularPolygon(6, x, y, grid.Radius, 0)

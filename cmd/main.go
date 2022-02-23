@@ -2,12 +2,16 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 
 	"github.com/SHA65536/Hexago"
 )
 
 func main() {
-	grid := Hexago.MakeHexGrid(1000, 1000, 6, 6)
+	r, _ := strconv.Atoi(os.Args[1])
+	c, _ := strconv.Atoi(os.Args[2])
+	grid := Hexago.MakeHexGrid(1000, 1000, float64(r), float64(c))
 	grid.SetFillAll(0, 0, 1, 1)
 	grid.SetStrokeAll(0, 0, 0, 1, 10)
 	grid.DrawFunc(func(i, j, _, _ int, _ *Hexago.Hexagon) error {
