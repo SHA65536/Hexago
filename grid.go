@@ -125,12 +125,16 @@ func (grid *HexGrid) SetText(x, y int, r, g, b, a float64, txt string, fontSize 
 // DrawFunc recieves a function and applies that function to each cell of the grid
 // the function recieves coordinates of each cell (x,y), the rows and cols (h,w)
 // and a pointer to the cell itself
-func (grid *HexGrid) DrawFunc(function func(x, y, h, w int, cell *Hexagon)) {
+func (grid *HexGrid) DrawFunc(function func(x, y, h, w int, cell *Hexagon) error) error {
 	for i := range grid.Tiles {
 		for j := range grid.Tiles[i] {
-			function(i, j, grid.Rows, grid.Cols, grid.Tiles[i][j])
+			err := function(i, j, grid.Rows, grid.Cols, grid.Tiles[i][j])
+			if err != nil {
+				return err
+			}
 		}
 	}
+	return nil
 }
 
 // GetNeighbors returns the direct neighbors of a given cell
