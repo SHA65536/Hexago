@@ -48,4 +48,4 @@ func main() {
 	grid.SavePNG("out.png")
 }
 ```
-![Example](https://github.com/SHA65536/Hexago/tree/main/cmd/exmaple.png)
+![Example](https://raw.githubusercontent.com/SHA65536/Hexago/main/cmd/example.png)
