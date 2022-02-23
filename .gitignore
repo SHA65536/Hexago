@@ -1,3 +1,5 @@
 *.env
 *.exe
 *.png
+
+!cmd/example.png
