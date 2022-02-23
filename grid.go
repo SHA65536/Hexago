@@ -5,12 +5,31 @@ import (
 	"math"
 
 	"github.com/fogleman/gg"
+	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/gofont/goregular"
 )
 
 type Hexagon struct {
-	FR, FG, FB, FA     float64
+	// Fill Colours
+	FR, FG, FB, FA float64
+	//Stroke Colours and width
 	SR, SG, SB, SA, SW float64
-	X, Y               int
+	//Font Colours font and text
+	TR, TG, TB, TA float64
+	Font           font.Face
+	Text           string
+	//Coords in the grid
+	X, Y int
+}
+
+func (h *Hexagon) SetText(r, g, b, a float64, text string, font font.Face) {
+	h.TR = r
+	h.TG = g
+	h.TB = b
+	h.TA = a
+	h.Text = text
+	h.Font = font
 }
 
 func (h *Hexagon) SetFill(r, g, b, a float64) {
@@ -92,6 +111,24 @@ func (grid *HexGrid) SetStroke(x, y int, r, g, b, a, w float64) error {
 	return nil
 }
 
+func (grid *HexGrid) SetText(x, y int, r, g, b, a float64, txt string, fontSize float64) error {
+	if x >= grid.Rows || y >= grid.Cols {
+		return fmt.Errorf("index error: index [%v][%v] out of bounds (%v,%v)", x, y, grid.Rows, grid.Cols)
+	}
+	font, _ := truetype.Parse(goregular.TTF)
+	face := truetype.NewFace(font, &truetype.Options{Size: fontSize})
+	grid.Tiles[x][y].SetText(r, g, b, a, txt, face)
+	return nil
+}
+
+//func (grid *HexGrid) GetNeighbors(x, y int) ([]*Hexagon, error) {
+//	neighbors := make([]*Hexagon, 0)
+//	if x >= grid.Rows || y >= grid.Cols {
+//		return nil, fmt.Errorf("index error: index [%v][%v] out of bounds (%v,%v)", x, y, grid.Rows, grid.Cols)
+//	}
+//
+//}
+
 // SavePNG saves the grid as a PNG
 func (grid *HexGrid) SavePNG(path string) error {
 	height := math.Sqrt(3 * grid.Radius * grid.Radius)
@@ -107,13 +144,22 @@ func (grid *HexGrid) SavePNG(path string) error {
 				x = grid.Radius + (float64(j) * 1.5 * grid.Radius)
 				y = (height / 2) + (height * float64(i))
 			}
-			grid.Context.DrawRegularPolygon(6, x, y, grid.Radius, 0)
-			grid.Context.SetRGBA(hex.FR, hex.FG, hex.FB, hex.FA)
-			grid.Context.Fill()
-			grid.Context.DrawRegularPolygon(6, x, y, grid.Radius, 0)
-			grid.Context.SetRGBA(hex.SR, hex.SG, hex.SB, hex.SA)
-			grid.Context.SetLineWidth(hex.SW)
-			grid.Context.Stroke()
+			if hex.FA != 0 {
+				grid.Context.DrawRegularPolygon(6, x, y, grid.Radius, 0)
+				grid.Context.SetRGBA(hex.FR, hex.FG, hex.FB, hex.FA)
+				grid.Context.Fill()
+			}
+			if hex.SW != 0 {
+				grid.Context.DrawRegularPolygon(6, x, y, grid.Radius, 0)
+				grid.Context.SetRGBA(hex.SR, hex.SG, hex.SB, hex.SA)
+				grid.Context.SetLineWidth(hex.SW)
+				grid.Context.Stroke()
+			}
+			if hex.Font != nil {
+				grid.Context.SetFontFace(hex.Font)
+				grid.Context.SetRGBA(hex.TR, hex.TG, hex.TB, hex.TA)
+				grid.Context.DrawStringAnchored(hex.Text, x, y, 0.5, 0.5)
+			}
 		}
 	}
 	return grid.Context.SavePNG(path)
