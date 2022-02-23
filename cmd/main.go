@@ -1,23 +1,13 @@
 package main
 
 import (
-	"math"
-
-	"github.com/fogleman/gg"
+	"github.com/SHA65536/Hexago"
 )
 
 func main() {
-	rad := 100.0
-	height := math.Sqrt(rad*rad + 2*rad*rad)
-	dc := gg.NewContext(1000, 1000)
-	dc.DrawRegularPolygon(6, 100, height, rad, 0)
-	dc.SetRGB(1, 0, 0)
-	dc.Fill()
-	dc.DrawRegularPolygon(6, 250, height/2, rad, 0)
-	dc.SetRGB(0, 1, 0)
-	dc.Fill()
-	dc.DrawRegularPolygon(6, 400, height, rad, 0)
-	dc.SetRGB(0, 0, 1)
-	dc.Fill()
-	dc.SavePNG("out.png")
+	grid := Hexago.MakeHexGrid(1000, 1000, 6, 6)
+	grid.SetRGBA(2, 2, 1, 0, 0, 1)
+	grid.SetRGBA(2, 3, 0, 1, 0, 1)
+	grid.SetRGBA(3, 3, 0, 0, 1, 1)
+	grid.SavePNG("out.png")
 }
