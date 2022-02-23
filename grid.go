@@ -177,7 +177,7 @@ func (grid *HexGrid) GetNeighbors(x, y int) ([]*Hexagon, error) {
 		if x+1 < grid.Rows && y > 0 {
 			neighbors = append(neighbors, grid.Tiles[x+1][y-1])
 		}
-		if x+1 < grid.Rows && y+1 < grid.Rows {
+		if x+1 < grid.Rows && y+1 < grid.Cols {
 			neighbors = append(neighbors, grid.Tiles[x+1][y+1])
 		}
 	} else {
