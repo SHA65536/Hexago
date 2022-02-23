@@ -56,6 +56,24 @@ func MakeHexGrid(w, h, r, c int) *HexGrid {
 	return grid
 }
 
+// SetFillAll sets all of the tiles' fill colour
+func (grid *HexGrid) SetFillAll(r, g, b, a float64) {
+	for i := range grid.Tiles {
+		for j := range grid.Tiles[i] {
+			grid.Tiles[i][j].SetFill(r, g, b, a)
+		}
+	}
+}
+
+// SetStrokeAll sets all of the tiles' stroke colour and width
+func (grid *HexGrid) SetStrokeAll(r, g, b, a, w float64) {
+	for i := range grid.Tiles {
+		for j := range grid.Tiles[i] {
+			grid.Tiles[i][j].SetStroke(r, g, b, a, w)
+		}
+	}
+}
+
 // SetFill sets the fill of a cell
 func (grid *HexGrid) SetFill(x, y int, r, g, b, a float64) error {
 	if x >= grid.Rows || y >= grid.Cols {
