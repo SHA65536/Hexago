@@ -11,7 +11,7 @@ import (
 const rows, cols int8 = 35, 41
 
 // Number of images to generate
-const frames int = 10000
+const frames int = 3800
 
 type color struct {
 	R float64

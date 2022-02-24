@@ -1,5 +1,6 @@
 *.env
 *.exe
 *.png
+*.mp4
 
 !example.png

@@ -36,5 +36,5 @@ func main() {
 	}
 
 	// Saving grid to disk
-	grid.SavePNG("out.png")
+	grid.SavePNG("example.png")
 }
