@@ -2,4 +2,4 @@
 *.exe
 *.png
 
-!cmd/example.png
+!example.png

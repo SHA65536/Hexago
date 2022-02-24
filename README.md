@@ -45,7 +45,7 @@ func main() {
 	}
 
 	// Saving grid to disk
-	grid.SavePNG("out.png")
+	grid.SavePNG("example.png")
 }
 ```
-![Example](https://raw.githubusercontent.com/SHA65536/Hexago/main/cmd/example.png)
+![Example](https://raw.githubusercontent.com/SHA65536/Hexago/main/example.png)
