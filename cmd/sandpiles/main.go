@@ -20,19 +20,18 @@ type color struct {
 }
 
 var colours = map[int8]color{
-	0: {0.3, 0.3, 0.3},                             // Grey?
-	1: {51.0 / 255.0, 62.0 / 255.0, 212.0 / 255.0}, // Blue?
-	2: {47.0 / 255.0, 162.0 / 255.0, 54.0 / 255.0}, // Green?
-	3: {1, 1, 0},                                   // Yellow?
-	4: {1, 140.0 / 255.0, 0},                       // Orange?
-	5: {253.0 / 255.0, 1.0 / 255.0, 0},             // Red?
+	0: {0, 0, 0},             // Black
+	1: {0.2, 0.243, 0.831},   // Blue
+	2: {0.184, 0.635, 0.211}, // Green
+	3: {1, 1, 0},             // Yellow
+	4: {1, 0.549, 0},         // Orange
+	5: {0.992, 0.01, 0},      // Red
 }
 
 func main() {
-	// Create a 17*21 cell grid that is 800x800 pixels
-	grid := Hexago.MakeHexGrid(800, 800, float64(rows), float64(cols))
+	// Create a 17*21 cell grid that is 1920x1080 pixels
+	grid := Hexago.MakeHexGrid(1920, 1080, float64(rows), float64(cols))
 	board := [rows][cols]int8{}
-	grid.SetStrokeAll(0, 0, 0, 1, 0.5)
 
 	// Creating progress bar
 	bar := progressbar.Default(int64(frames))
