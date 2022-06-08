@@ -86,6 +86,8 @@ func MakeHexGrid(w, h, r, c float64) *HexGrid {
 	return grid
 }
 
+// MakeHexGridWithContext creates a grid with external context
+// Uses context width and height
 func MakeHexGridWithContext(ctx *gg.Context, r, c float64) *HexGrid {
 	var w, h = float64(ctx.Width()), float64(ctx.Height())
 	rWidth := (2 * w) / ((3 * c) + 1)
@@ -222,6 +224,11 @@ func (grid *HexGrid) GetNeighbors(x, y int) ([]*Hexagon, error) {
 
 // SavePNG saves the grid as a PNG
 func (grid *HexGrid) SavePNG(path string) error {
+	grid.DrawGrid()
+	return grid.Context.SavePNG(path)
+}
+
+func (grid *HexGrid) DrawGrid() {
 	height := math.Sqrt(3 * grid.Radius * grid.Radius)
 	for i := range grid.Tiles {
 		for j := range grid.Tiles[i] {
@@ -253,5 +260,4 @@ func (grid *HexGrid) SavePNG(path string) error {
 			}
 		}
 	}
-	return grid.Context.SavePNG(path)
 }
