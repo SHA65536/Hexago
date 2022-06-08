@@ -86,6 +86,35 @@ func MakeHexGrid(w, h, r, c float64) *HexGrid {
 	return grid
 }
 
+func MakeHexGridWithContext(ctx *gg.Context, r, c float64) *HexGrid {
+	var w, h = float64(ctx.Width()), float64(ctx.Height())
+	rWidth := (2 * w) / ((3 * c) + 1)
+	rHeight := (2 * h) / (math.Sqrt(3) * math.Sqrt((4*(r*r))+(4*r)+1))
+	grid := &HexGrid{
+		Context: ctx,
+		Tiles:   make([][]*Hexagon, int(r)),
+		Width:   int(w),
+		Height:  int(h),
+		Rows:    int(r),
+		Cols:    int(c),
+		Radius:  math.Min(rWidth, rHeight),
+	}
+	if rHeight > rWidth {
+		grid.marginY = h - ((0.5 + r) * (math.Sqrt(3 * rWidth * rWidth)))
+		grid.marginY = grid.marginY / 2
+	} else {
+		grid.marginX = w - (((c / 2) * 3 * rHeight) + (rHeight / 2))
+		grid.marginX = grid.marginX / 2
+	}
+	for i := range grid.Tiles {
+		grid.Tiles[i] = make([]*Hexagon, int(c))
+		for j := range grid.Tiles[i] {
+			grid.Tiles[i][j] = &Hexagon{X: i, Y: j}
+		}
+	}
+	return grid
+}
+
 // SetFillAll sets all of the tiles' fill colour
 func (grid *HexGrid) SetFillAll(r, g, b, a float64) {
 	for i := range grid.Tiles {
